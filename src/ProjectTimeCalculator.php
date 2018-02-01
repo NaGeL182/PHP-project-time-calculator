@@ -76,7 +76,7 @@ class ProjectTimeCalculator
             $date = new \DateTime($dateTime);
         } else {
             throw new \Exception(
-                "startDate must be a DateTime object or datetime string. " . \gettype($startDate) . " given."
+                "startDate must be a DateTime object or datetime string. " . \gettype($dateTime) . " given."
             );
         }
         // check if start day is on a workday

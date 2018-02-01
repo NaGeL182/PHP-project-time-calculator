@@ -19,6 +19,17 @@ final class ProjectTimeCalculatorTest extends TestCase
         $this->assertEquals($data["result"], $endDate->format("Y-m-d H:i:s"));
     }
 
+    /**
+     * @expectedException Exception
+     * @dataProvider incorrectDataProvider
+     */
+    public function testIncorectData($data)
+    {
+        $project = new ProjectTimeCalculator();
+        $project->setStartDate($data["startDate"]);
+        $project->setTasks($data["tasks"]);
+    }
+
     public function correctDataProvider()
     {
         return [
@@ -68,6 +79,108 @@ final class ProjectTimeCalculatorTest extends TestCase
                         ],
                     ],
                     "result" => "2018-01-15 11:00:00"
+                ]
+            ],
+            "simple_1_task_dateTimeObject" => [
+                [
+                    "startDate" => new \DateTime("2018-01-10 09:00:00"),
+                    "tasks" => [
+                        [
+                            "startDate" => new \DateTime("2018-01-10 09:00:00"),
+                            "duration" => 8
+                        ],
+                    ],
+                    "result" => "2018-01-10 17:00:00"
+                ]
+            ],
+        ];
+    }
+
+    public function incorrectDataProvider()
+    {
+        return [
+            "tasks_is_not_array" => [
+                [
+                    "startDate" => "2018-01-10 09:00:00",
+                    "tasks" => "hello",
+                    "result" => ""
+                ]
+            ],
+            "invidual_task_is_not_array" => [
+                [
+                    "startDate" => "2018-01-10 09:00:00",
+                    "tasks" => [
+                        "ello",
+                    ],
+                    "result" => ""
+                ]
+            ],
+            "task_has_no_startDate" => [
+                [
+                    "startDate" => "2018-01-10 09:00:00",
+                    "tasks" => [
+                        []
+                    ],
+                    "result" => ""
+                ]
+            ],
+            "task_has_no_duration" => [
+                [
+                    "startDate" => "2018-01-10 09:00:00",
+                    "tasks" => [
+                        [
+                            "startDate" => "2018-01-10 09:00:00"
+                        ]
+                    ],
+                    "result" => ""
+                ]
+            ],
+            "task_duration_non_int" => [
+                [
+                    "startDate" => "2018-01-10 09:00:00",
+                    "tasks" => [
+                        [
+                            "startDate" => "2018-01-10 09:00:00",
+                            "duration" => 3.14
+                        ]
+                    ],
+                    "result" => ""
+                ]
+            ],
+            "startDate_is_int" => [
+                [
+                    "startDate" => 2018,
+                    "tasks" => [
+                        [
+                            "startDate" => "2018-01-10 09:00:00",
+                            "duration" => 3
+                        ]
+                    ],
+                    "result" => ""
+                ]
+            ],
+            "none_work_day_start" => [
+                [
+                    "startDate" => "2018-01-13 09:00:00",
+                    "tasks" => [
+                        [
+                            "startDate" => "2018-01-10 09:00:00",
+                            "duration" => 8
+                        ],
+                    ],
+                    "result" => "2018-01-10 17:00:00"
+                ]
+            ],
+            "none_work_hour_start" => [
+                [
+                    "startDate" => "2018-01-10 09:00:00",
+                    "tasks" => [
+                        [
+                            "startDate" => "2018-01-10 07:00:00",
+                            "duration" => 8
+                        ],
+                    ],
+                    "result" => "2018-01-10 17:00:00"
                 ]
             ],
         ];
